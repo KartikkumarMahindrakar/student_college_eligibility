@@ -1,0 +1,21 @@
+.login-page {
+  display: flex;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.error-message {
+  color: #b3261e;
+  font-size: 0.875rem;
+  margin: 4px 0 12px;
+}

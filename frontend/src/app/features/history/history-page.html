@@ -1,0 +1,87 @@
+<h2>Submission History</h2>
+
+<form [formGroup]="filterForm" (ngSubmit)="search()" class="filter-form">
+  <mat-form-field appearance="outline">
+    <mat-label>Student Name</mat-label>
+    <input matInput formControlName="name" placeholder="Search by name" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Course</mat-label>
+    <mat-select formControlName="course">
+      <mat-option value="">All courses</mat-option>
+      @for (course of courseService.allCourses(); track course.name) {
+        <mat-option [value]="course.name">{{ course.name }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Status</mat-label>
+    <mat-select formControlName="status">
+      <mat-option value="">All</mat-option>
+      <mat-option value="ELIGIBLE">Eligible</mat-option>
+      <mat-option value="NOT_ELIGIBLE">Not Eligible</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>From</mat-label>
+    <input matInput type="date" formControlName="from" />
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>To</mat-label>
+    <input matInput type="date" formControlName="to" />
+  </mat-form-field>
+
+  <div class="filter-actions">
+    <button mat-flat-button color="primary" type="submit">
+      <mat-icon>search</mat-icon> Search
+    </button>
+    <button mat-button type="button" (click)="resetFilters()">Clear</button>
+  </div>
+</form>
+
+<div class="export-actions">
+  <button mat-stroked-button type="button" (click)="exportExcel()" [disabled]="exporting()">
+    <mat-icon>description</mat-icon> Export Excel
+  </button>
+  <button mat-stroked-button type="button" (click)="exportPdf()" [disabled]="exporting()">
+    <mat-icon>picture_as_pdf</mat-icon> Export PDF
+  </button>
+</div>
+
+@if (loading()) {
+  <div class="center"><mat-spinner /></div>
+} @else {
+  <table mat-table [dataSource]="rows()" class="history-table">
+    <ng-container matColumnDef="studentName">
+      <th mat-header-cell *matHeaderCellDef>Student Name</th>
+      <td mat-cell *matCellDef="let row">{{ row.studentName }}</td>
+    </ng-container>
+    <ng-container matColumnDef="courseApplied">
+      <th mat-header-cell *matHeaderCellDef>Course Applied</th>
+      <td mat-cell *matCellDef="let row">{{ row.courseApplied }}</td>
+    </ng-container>
+    <ng-container matColumnDef="eligibilityStatus">
+      <th mat-header-cell *matHeaderCellDef>Eligibility Status</th>
+      <td mat-cell *matCellDef="let row">
+        <span class="status-chip" [class.eligible]="row.eligibilityStatus === 'Eligible'">
+          {{ row.eligibilityStatus }}
+        </span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="date">
+      <th mat-header-cell *matHeaderCellDef>Date</th>
+      <td mat-cell *matCellDef="let row">{{ row.date | date: 'medium' }}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+  </table>
+
+  @if (rows().length === 0) {
+    <p class="empty-state">No submissions match your filters.</p>
+  }
+}

@@ -1,0 +1,124 @@
+<mat-card class="form-card">
+  <mat-card-header>
+    <mat-card-title>Course Eligibility Application</mat-card-title>
+    <mat-card-subtitle>Fill in your details to check eligibility for your desired course</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      @if (serverError()) {
+        <div class="server-error">{{ serverError() }}</div>
+      }
+
+      <h3>Personal Details</h3>
+      <div class="row" formGroupName="personal">
+        <mat-form-field appearance="outline">
+          <mat-label>Student Name</mat-label>
+          <input matInput formControlName="studentName" />
+          @let nameControl = form.get('personal.studentName');
+          @if (nameControl?.touched && nameControl?.hasError('required')) {
+            <mat-error>Name is required</mat-error>
+          } @else if (nameControl?.hasError('pattern')) {
+            <mat-error>Alphabets and single spaces only</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Age</mat-label>
+          <input matInput type="number" formControlName="age" />
+          @if (form.get('personal.age')?.touched && form.get('personal.age')?.invalid) {
+            <mat-error>Age must be between 17 and 25</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Gender</mat-label>
+          <mat-select formControlName="gender">
+            <mat-option value="Male">Male</mat-option>
+            <mat-option value="Female">Female</mat-option>
+            <mat-option value="Other">Other</mat-option>
+          </mat-select>
+          @if (form.get('personal.gender')?.touched && form.get('personal.gender')?.invalid) {
+            <mat-error>Gender is required</mat-error>
+          }
+        </mat-form-field>
+      </div>
+
+      <h3>Academic Details</h3>
+      <div formGroupName="academic">
+        <p class="hint">Enter marks for 6 distinct subjects (0-100 each).</p>
+
+        <div class="subject-grid" formArrayName="subjectMarks">
+          @for (row of subjectRows.controls; track $index; let i = $index) {
+            <div class="subject-row" [formGroupName]="i">
+              <mat-form-field appearance="outline">
+                <mat-label>Subject {{ i + 1 }}</mat-label>
+                <mat-select formControlName="subjectName">
+                  @for (subject of subjectService.subjects(); track subject) {
+                    <mat-option [value]="subject" [disabled]="isChosenElsewhere(subject, i)">
+                      {{ subject }}
+                    </mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <mat-label>Marks</mat-label>
+                <input matInput type="number" formControlName="marks" min="0" max="100" />
+              </mat-form-field>
+            </div>
+          }
+        </div>
+        @if (subjectRows.hasError('duplicateSubjects')) {
+          <p class="error-message">Each of the 6 subjects must be distinct.</p>
+        }
+
+        <div class="exam-row">
+          <mat-checkbox formControlName="jeeQualified">JEE Qualified</mat-checkbox>
+          <mat-checkbox formControlName="neetQualified">NEET Qualified</mat-checkbox>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Desired Course</mat-label>
+          <mat-select formControlName="desiredCourse">
+            @for (group of courseService.courseGroups(); track group.stream) {
+              <mat-optgroup [label]="group.stream">
+                @for (course of group.courses; track course.name) {
+                  <mat-option [value]="course.name">{{ course.name }}</mat-option>
+                }
+              </mat-optgroup>
+            }
+          </mat-select>
+          @if (form.get('academic.desiredCourse')?.touched && form.get('academic.desiredCourse')?.invalid) {
+            <mat-error>Please select a course</mat-error>
+          }
+        </mat-form-field>
+
+        @if (selectedCourse(); as course) {
+          <div class="course-hint">
+            <mat-icon>info</mat-icon>
+            <div>
+              <div>Required subjects: {{ course.requiredSubjects.join(', ') }}</div>
+              @if (course.requiresJee) {
+                <div>Requires JEE Qualified = Yes</div>
+              }
+              @if (course.requiresNeet) {
+                <div>Requires NEET Qualified = Yes</div>
+              }
+              @if (course.cutoffPercentage) {
+                <div>Minimum average required: {{ course.cutoffPercentage }}%</div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <button mat-flat-button color="primary" type="submit" [disabled]="submitting()" class="submit-button">
+        @if (submitting()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Submit
+        }
+      </button>
+    </form>
+  </mat-card-content>
+</mat-card>

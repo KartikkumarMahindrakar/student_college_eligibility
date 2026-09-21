@@ -1,0 +1,31 @@
+@if (loading()) {
+  <div class="center"><mat-spinner /></div>
+} @else if (result(); as result) {
+  <mat-card class="result-card" [class.eligible]="result.eligible" [class.rejected]="!result.eligible">
+    <mat-card-header>
+      <mat-icon mat-card-avatar>{{ result.eligible ? 'check_circle' : 'cancel' }}</mat-icon>
+      <mat-card-title>{{ result.eligible ? 'Eligible' : 'Not Eligible' }}</mat-card-title>
+      <mat-card-subtitle>{{ result.studentName }} &middot; {{ result.desiredCourse }}</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <p class="reason">{{ result.reason }}</p>
+
+      @if (!result.eligible && result.recommendedCourses.length > 0) {
+        <h3>Recommended alternatives</h3>
+        <mat-chip-set>
+          @for (course of result.recommendedCourses; track course) {
+            <mat-chip>{{ course }}</mat-chip>
+          }
+        </mat-chip-set>
+      }
+    </mat-card-content>
+    <mat-card-actions>
+      <a mat-flat-button color="primary" routerLink="/apply">Submit another application</a>
+    </mat-card-actions>
+  </mat-card>
+} @else if (notFound()) {
+  <div class="center">
+    <p>We couldn't find that result. It may have expired, or the link is invalid.</p>
+    <a mat-flat-button color="primary" routerLink="/apply">Back to the application form</a>
+  </div>
+}

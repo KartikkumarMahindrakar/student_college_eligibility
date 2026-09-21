@@ -1,0 +1,50 @@
+<h2>Eligibility Statistics</h2>
+
+@if (loading()) {
+  <div class="center"><mat-spinner /></div>
+} @else if (stats(); as s) {
+  <div class="summary-cards">
+    <mat-card>
+      <mat-card-content>
+        <div class="stat-value">{{ s.totalSubmissions }}</div>
+        <div class="stat-label">Total Submissions</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content>
+        <div class="stat-value eligible">{{ s.eligibleCount }}</div>
+        <div class="stat-label">Eligible</div>
+      </mat-card-content>
+    </mat-card>
+    <mat-card>
+      <mat-card-content>
+        <div class="stat-value rejected">{{ s.notEligibleCount }}</div>
+        <div class="stat-label">Not Eligible</div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  @if (s.courseWiseCounts.length > 0) {
+    <div class="charts-grid">
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Eligible vs Not Eligible</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="chart-container">
+          <canvas baseChart [data]="eligibilityChartData()" [options]="doughnutOptions" type="doughnut"></canvas>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card class="chart-card">
+        <mat-card-header>
+          <mat-card-title>Applications per Course</mat-card-title>
+        </mat-card-header>
+        <mat-card-content class="chart-container">
+          <canvas baseChart [data]="courseChartData()" [options]="barOptions" type="bar"></canvas>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  } @else {
+    <p class="empty-state">No submissions yet.</p>
+  }
+}

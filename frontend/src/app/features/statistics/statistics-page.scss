@@ -1,0 +1,54 @@
+.summary-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.stat-value {
+  font-size: 2rem;
+  font-weight: 600;
+  text-align: center;
+
+  &.eligible {
+    color: #2e7d32;
+  }
+
+  &.rejected {
+    color: #b3261e;
+  }
+}
+
+.stat-label {
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant, #666);
+}
+
+.charts-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.chart-container {
+  position: relative;
+  height: 300px;
+}
+
+.center {
+  text-align: center;
+  padding: 32px;
+}
+
+.empty-state {
+  text-align: center;
+  padding: 24px;
+  color: var(--mat-sys-on-surface-variant, #666);
+}
+
+@media (max-width: 720px) {
+  .summary-cards,
+  .charts-grid {
+    grid-template-columns: 1fr;
+  }
+}

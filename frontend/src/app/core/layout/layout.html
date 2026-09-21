@@ -1,0 +1,22 @@
+<mat-toolbar color="primary" class="toolbar">
+  <span class="brand">Course Eligibility Portal</span>
+  <span class="spacer"></span>
+  <nav class="nav-links">
+    <a mat-button routerLink="/apply" routerLinkActive="active-link">Apply</a>
+    <a mat-button routerLink="/history" routerLinkActive="active-link">History</a>
+    <a mat-button routerLink="/statistics" routerLinkActive="active-link">Statistics</a>
+    @if (auth.isAuthenticated()) {
+      <span class="username">{{ auth.username() }}</span>
+      <button mat-button (click)="logout()">Logout</button>
+    } @else {
+      <a mat-button routerLink="/login" routerLinkActive="active-link">Staff Login</a>
+    }
+  </nav>
+  <button mat-icon-button (click)="theme.toggle()" aria-label="Toggle dark mode">
+    <mat-icon>{{ theme.isDark() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+  </button>
+</mat-toolbar>
+
+<main class="content">
+  <router-outlet />
+</main>

@@ -1,0 +1,49 @@
+.filter-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.export-actions {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.history-table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+.status-chip {
+  padding: 2px 10px;
+  border-radius: 12px;
+  background: #fdecea;
+  color: #b3261e;
+  font-size: 0.8rem;
+
+  &.eligible {
+    background: #e6f4ea;
+    color: #2e7d32;
+  }
+}
+
+.center {
+  text-align: center;
+  padding: 32px;
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--mat-sys-on-surface-variant, #666);
+  padding: 24px;
+}
